@@ -241,7 +241,7 @@ func resourceAwsInternetGatewayDetach(d *schema.ResourceData, meta interface{}) 
 		Refresh:        detachIGStateRefreshFunc(conn, d.Id(), vpcID.(string)),
 		Timeout:        15 * time.Minute,
 		Delay:          10 * time.Second,
-		NotFoundChecks: 30,
+		NotFoundChecks: 90, // 90 retries * 10 * time.Second = 900 seconds = 15 minutes (which ~equals to the total Timeout above)
 	}
 	if _, err := stateConf.WaitForState(); err != nil {
 		return fmt.Errorf(
